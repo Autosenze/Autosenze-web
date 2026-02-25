@@ -1,75 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import supabase from './supabaseClient';
-import Login from './components/Login'; // 👉 Importa el nuevo componente
+import "./App.css";
 
-function App() {
-  const [profiles, setProfiles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
-
-  // Al iniciar, verifica si ya hay sesión activa
-  useEffect(() => {
-    const getUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (data?.user) {
-        setUser(data.user);
-      } else {
-        setUser(null);
-      }
-    };
-    getUser();
-  }, []);
-
-  // Cuando hay usuario, busca su perfil
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (user) {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('auth_user_id', user.id);
-
-        if (!error) {
-          setProfiles(data);
-        }
-        setLoading(false);
-      }
-    };
-    fetchProfile();
-  }, [user]);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    window.location.reload();
-  };
-
+export default function App() {
   return (
-    <div className="App">
-      <h1>Bienvenido a AutoSenze!</h1>
+    <div className="wrap">
+      <div className="bg">
+        <div className="orb orb1" />
+        <div className="orb orb2" />
+      </div>
 
-      {!user ? (
-        <Login onLogin={setUser} />
-      ) : loading ? (
-        <p>Cargando perfil...</p>
-      ) : (
-        <>
-          <h2>Perfil:</h2>
-          {profiles.length > 0 ? (
-            <ul>
-              <li>
-                <strong>{profiles[0].nombre}</strong> – {profiles[0].email} – Rol: {profiles[0].role}
-              </li>
-            </ul>
-          ) : (
-            <p>No se pudo cargar tu perfil.</p>
-          )}
-          <button onClick={handleLogout} style={{ marginTop: '20px' }}>
-            Cerrar sesión
-          </button>
-        </>
-      )}
+      <div className="card">
+        <div className="pill">
+          <span className="dot" />
+          AutoSenze · Launching soon
+        </div>
+
+        <h1 className="title">Próximamente</h1>
+
+        <p className="subtitle">
+          El marketplace que conecta clientes con talleres, detailing y personalización.
+        </p>
+
+        <div className="cta">
+          <a href="#" className="btn primary">Contacto</a>
+          <a href="#" className="btn ghost">Instagram</a>
+        </div>
+      </div>
     </div>
   );
 }
-
-export default App;
